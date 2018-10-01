@@ -5,7 +5,7 @@ clc
 %Put the directory for the data file you wish to analyze
 %Example: filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/210/TLR_10256_210_H.E.sensor data/LiveAbore1.dat";
 %OCTAVE USES FORWARD SLASHES - NOT BACK SLASHES
-filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/210/TLR_10256_210_H.E.sensor data/LiveAbore3.dat";
+filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/207/TLR_10256_207_H.E.sensor data/LiveAbore1.dat";
 
 %Stores the number of opens and closes in the dataset
 numopen = 0;
@@ -13,8 +13,8 @@ numclose = 0;
 
 %These thresholds need to be set based on the level of the magnetic field detected
 %by the hall sensor for open and closed positions
-hall_open_threshold = 2.795;
-hall_close_threshold = 2.760;
+hall_open_threshold = 2.81;
+hall_close_threshold = 2.77;
 
 %Veriables for Plots
 openvalue = hall_open_threshold;
@@ -52,7 +52,7 @@ for j = 2:1:(numel(command)-1)
 %if firmware on controller changes).  If transition, we increment
 %the count for number of opens and check to see if there is a corresponding 
 %transition in the hall signal.
-    if ((command(j) > 1.5) && (command(j-1) < 1.5) && (command(j-5) < 1.5))
+    if ((command(j) > 1.5) && (command(j-1) < 1.5) && (command(j-10) < 1.5))
         numopen = numopen + 1;
         %Might need to change the equality signs if magnet in solenoid is flipped.
         %If so, also need to change inequalities in close check below.  Inequality
@@ -60,7 +60,7 @@ for j = 2:1:(numel(command)-1)
         %11 data points later chosen to get to steady state magnetic field after 
         %pulsing current through solenoid coils.  This might need to change if
         %pulse time is increased.
-        if ((hall(j+5) > hall_open_threshold) && (hall(j-1) < hall_close_threshold))  
+        if ((hall(j+10) > hall_open_threshold) && (hall(j-1) < hall_close_threshold))  
             %display('The front shocks are working fine');
         else
             open_failures = open_failures + 1;
@@ -71,10 +71,10 @@ for j = 2:1:(numel(command)-1)
     
 %Check for close    
 %Similar to above, some inequalities may need to be flipped depending on situation
-    if ((command(j) <  1.5) && (command(j-1) > 1.5) && (command(j+5) < 1.5))
+    if ((command(j) <  1.5) && (command(j-1) > 1.5) && (command(j+10) < 1.5))
         numclose = numclose + 1;
         %Might need to change the equality signs if magnet in solenoid is flipped
-        if ((hall(j+5) < hall_close_threshold) && (hall(j-1) > hall_open_threshold))  
+        if ((hall(j+10) < hall_close_threshold) && (hall(j-1) > hall_open_threshold))  
             %display('The front shocks are working fine');
         else
             close_failures = close_failures + 1;
@@ -132,6 +132,6 @@ endfor
 #{
 openvalue = hall_open_threshold;
 closevalue = hall_close_threshold;
-plot(time(lowerrange:upperrange), hall(lowerrange:upperrange), time(lowerrange:upperrange), command(lowerrange:upperrange))
-     %time(lowerrange:upperrange), openvalue, time(lowerrange:upperrange), closevalue)
+plot(time(lowerrange:upperrange), hall(lowerrange:upperrange), time(lowerrange:upperrange), command(lowerrange:upperrange),
+     time(lowerrange:upperrange), openvalue, time(lowerrange:upperrange), closevalue)
 #}

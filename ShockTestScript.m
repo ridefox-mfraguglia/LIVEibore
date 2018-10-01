@@ -33,7 +33,7 @@ close_failures = 0;
 openfailureIndex = 0;
 closefailureIndex = 0;
 
-data = dlmread(filepath);
+data = dlmread(filepath, "\t", 2, 0);
 hall = data(:,6);
 time = data(:,1);
 command = data(:,5);
