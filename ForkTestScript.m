@@ -5,7 +5,7 @@ clc
 %Put the directory for the data file you wish to analyze
 %Example: filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/210/TLR_10256_210_H.E.sensor data/LiveAbore1.dat";
 %OCTAVE USES FORWARD SLASHES - NOT BACK SLASHES
-filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/210/TLR_10256_210_H.E.sensor data/LiveAbore1.dat";
+filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/210/TLR_10256_210_H.E.sensor data/LiveAbore3.dat";
 
 %Stores the number of opens and closes in the dataset
 numopen = 0;
@@ -19,8 +19,8 @@ hall_close_threshold = 2.760;
 %Veriables for Plots
 openvalue = hall_open_threshold;
 closevalue = hall_close_threshold;
-lowerrange = 1;
-upperrange = 110;
+lowerrange = 1000;
+upperrange = 2000;
 
 %Stores the number of failures
 open_failures = 0;
@@ -31,7 +31,7 @@ close_failures = 0;
 openfailureIndex = 0;
 closefailureIndex = 0;
 
-data = dlmread(filepath);
+data = dlmread(filepath, "\t", 2, 0);
 hall = data(:,6);
 time = data(:,1);
 command = data(:,5);
@@ -86,6 +86,8 @@ endfor
   
 #{
 %Plot function for closing
+openvalue = hall_open_threshold;
+closevalue = hall_close_threshold;
 for index = 1:600
   openvalue = [openvalue; hall_open_threshold];
   closevalue = [closevalue; hall_close_threshold];
@@ -106,6 +108,8 @@ endfor
 
 #{
 %Plotting function for opens
+openvalue = hall_open_threshold;
+closevalue = hall_close_threshold;
 for index = 1:600
   openvalue = [openvalue; hall_open_threshold];
   closevalue = [closevalue; hall_close_threshold];
@@ -126,6 +130,8 @@ endfor
 
 %general plot functions, need to set lowerrange and upperrange to something reasonable before use
 #{
-plot(time(lowerrange:upperrange), hall(lowerrange:upperrange), time(lowerrange:upperrange), command(lowerrange:upperrange), 
-     time(lowerrange:upperrange), openvalue, time(lowerrange:upperrange), closevalue)
+openvalue = hall_open_threshold;
+closevalue = hall_close_threshold;
+plot(time(lowerrange:upperrange), hall(lowerrange:upperrange), time(lowerrange:upperrange), command(lowerrange:upperrange))
+     %time(lowerrange:upperrange), openvalue, time(lowerrange:upperrange), closevalue)
 #}
