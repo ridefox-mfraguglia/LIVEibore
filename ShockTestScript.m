@@ -21,8 +21,8 @@ hall_close_threshold = 2.765;
 %Veriables for Plots
 openvalue = hall_open_threshold;
 closevalue = hall_close_threshold;
-lowerrange = 1;
-upperrange = 110;
+lowerrange = 1000;
+upperrange = 2000;
 
 %Stores the number of failures
 open_failures = 0;
@@ -54,7 +54,7 @@ for j = 2:1:(numel(command)-1)
 %if firmware on controller changes).  If transition, we increment
 %the count for number of opens and check to see if there is a corresponding 
 %transition in the hall signal.
-    if ((command(j) < 0.75) && (command(j-1) > 0.75) && (command(j-5) > 0.75))
+    if ((command(j) < 0.75) && (command(j-1) > 0.75) && (command(j-10) > 0.75))
         numopen = numopen + 1;
         %Might need to change the equality signs if magnet in solenoid is flipped.
         %If so, also need to change inequalities in close check below.  Inequality
@@ -62,7 +62,7 @@ for j = 2:1:(numel(command)-1)
         %11 data points later chosen to get to steady state magnetic field after 
         %pulsing current through solenoid coils.  This might need to change if
         %pulse time is increased.
-        if ((hall(j+5) > hall_open_threshold) && (hall(j-1) < hall_close_threshold))  
+        if ((hall(j+10) > hall_open_threshold) && (hall(j-1) < hall_close_threshold))  
             %display('The front shocks are working fine');
         else
             open_failures = open_failures + 1;
@@ -73,10 +73,10 @@ for j = 2:1:(numel(command)-1)
     
 %Check for close    
 %Similar to above, some inequalities may need to be flipped depending on situation
-    if ((command(j) >  0.75) && (command(j-1) < 0.75) && (command(j+5) > 0.75))
+    if ((command(j) >  0.75) && (command(j-1) < 0.75) && (command(j+10) > 0.75))
         numclose = numclose + 1;
         %Might need to change the equality signs if magnet in solenoid is flipped
-        if ((hall(j+5) < hall_close_threshold) && (hall(j-1) > hall_open_threshold))  
+        if ((hall(j+10) < hall_close_threshold) && (hall(j-1) > hall_open_threshold))  
             %display('The front shocks are working fine');
         else
             close_failures = close_failures + 1;
@@ -88,6 +88,8 @@ endfor
   
 #{
 %Plot function for closing
+openvalue = hall_open_threshold;
+closevalue = hall_close_threshold;
 for index = 1:600
   openvalue = [openvalue; hall_open_threshold];
   closevalue = [closevalue; hall_close_threshold];
@@ -108,6 +110,8 @@ endfor
 
 #{
 %Plotting function for opens
+openvalue = hall_open_threshold;
+closevalue = hall_close_threshold;
 for index = 1:600
   openvalue = [openvalue; hall_open_threshold];
   closevalue = [closevalue; hall_close_threshold];
