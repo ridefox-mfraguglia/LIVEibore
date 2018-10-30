@@ -5,7 +5,7 @@ clc
 %Put the directory for the data file you wish to analyze
 %Example: filepath = "//sv-fileserver01/Test_Lab/Test Lab Data/TLR/TLR_10000_to_10999/TLR_10256/210/TLR_10256_210_H.E.sensor data/LiveAbore1.dat";
 %OCTAVE USES FORWARD SLASHES - NOT BACK SLASHES
-filepath = "C:/Users/mfraguglia/Documents/GitHub/LIVEibore/18_10_30.TXT";
+filepath = "C:/Users/mfraguglia/Documents/GitHub/LIVEibore/18_10_29.TXT";
 
 %Stores the number of opens and closes in the dataset
 numopen = 0;
@@ -34,11 +34,11 @@ closefailureIndex = 0;
 data = dlmread(filepath, "\t", 2, 0);
 hall = data(:,3);
 time = data(:,6);
-command = (data(:,5))/5 + 2.4;
+command = (data(:,5))/10 + 2.5;
 
 for j = 2:1:(numel(command)-1)
 %Check for opens
-    if ((command(j) > 2.5) && (command(j-1) < 2.5))
+    if ((command(j) > 2.55) && (command(j-1) < 2.55))
         numopen = numopen + 1;
         %Might need to change the equality signs if magnet in solenoid is flipped.
         %If so, also need to change inequalities in close check below.  Inequality
@@ -57,7 +57,7 @@ for j = 2:1:(numel(command)-1)
     
 %Check for close    
 %Similar to above, some inequalities may need to be flipped depending on situation
-    if ((command(j) <  2.5) && (command(j-1) > 2.5))
+    if ((command(j) <  2.55) && (command(j-1) > 2.55))
         numclose = numclose + 1;
         %Might need to change the equality signs if magnet in solenoid is flipped
         if ((hall(j+1) < hall_close_threshold))  
@@ -89,12 +89,12 @@ endfor
 #{
 %Plotting function for opens
 for k = 2:1:numel(openfailureIndex)
-  if (openfailureIndex(k) <= 300)
+  if (openfailureIndex(k) <= 20)
     lowerrange = 1;
   else
-    lowerrange = openfailureIndex(k)-300;
+    lowerrange = openfailureIndex(k)-20;
   endif
-  upperrange = openfailureIndex(k)+300;
+  upperrange = openfailureIndex(k)+20;
   plot(time(lowerrange:upperrange), hall(lowerrange:upperrange), time(lowerrange:upperrange), command(lowerrange:upperrange))
   legend('Hall Voltage', 'Command');
   title(k);
